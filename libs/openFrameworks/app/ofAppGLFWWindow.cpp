@@ -1537,6 +1537,10 @@ void ofAppGLFWWindow::resize_cb(GLFWwindow* windowP_, int w, int h) {
 		instance->windowH = framebufferH;
 	}
 	
+#if defined(TARGET_OSX)
+    instance->update();
+    instance->draw();
+#endif
 	instance->currentW = windowW;
 	instance->currentH = windowH;
 	instance->events().notifyWindowResized(framebufferW, framebufferH);

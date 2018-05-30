@@ -139,6 +139,7 @@ bool ofxOscReceiver::getParameter(ofAbstractParameter &parameter){
 	while(messagesChannel.tryReceive(msg)){
 		ofAbstractParameter * p = &parameter;
 		std::vector<std::string> address = ofSplitString(msg.getAddress(),"/", true);
+        ofLogVerbose("osc received", msg.getAddress() + " " + msg.getArgTypeName(0));
 		for(unsigned int i = 0; i < address.size(); i++){
 			if(p){
 				if(address[i] == p->getEscapedName()){
@@ -152,17 +153,20 @@ bool ofxOscReceiver::getParameter(ofAbstractParameter &parameter){
 								p = nullptr;
 							}
 						}
-					}
-					else if(p->type() == typeid(ofParameter<int>).name() &&
-						msg.getArgType(0) == OFXOSC_TYPE_INT32){
+					} else if(p->type() == typeid(ofParameter<int>).name() &&
+						(msg.getArgType(0) == OFXOSC_TYPE_INT32 ||
+                         msg.getArgType(0) == OFXOSC_TYPE_INT64)){
+                        ofLogVerbose("osc set an integer", p->getName());
 						p->cast<int>() = msg.getArgAsInt32(0);
 					}
 					else if(p->type() == typeid(ofParameter<float>).name() &&
 						msg.getArgType(0) == OFXOSC_TYPE_FLOAT){
+                        ofLogVerbose("osc set a float", p->getName());
 						p->cast<float>() = msg.getArgAsFloat(0);
 					}
 					else if(p->type() == typeid(ofParameter<double>).name() &&
 						msg.getArgType(0) == OFXOSC_TYPE_DOUBLE){
+                        ofLogVerbose("osc set a double", p->getName());
 						p->cast<double>() = msg.getArgAsDouble(0);
 					}
 					else if(p->type() == typeid(ofParameter<bool>).name() &&
@@ -174,9 +178,11 @@ bool ofxOscReceiver::getParameter(ofAbstractParameter &parameter){
 						 msg.getArgType(0) == OFXOSC_TYPE_DOUBLE ||
 						 msg.getArgType(0) == OFXOSC_TYPE_STRING ||
 						 msg.getArgType(0) == OFXOSC_TYPE_SYMBOL)){
+                        ofLogVerbose("osc set a bool", p->getName());
 						p->cast<bool>() = msg.getArgAsBool(0);
 					}
 					else if(msg.getArgType(0) == OFXOSC_TYPE_STRING){
+                        ofLogVerbose("osc set a string", p->getName());
 						p->fromString(msg.getArgAsString(0));
 					}
 				}
