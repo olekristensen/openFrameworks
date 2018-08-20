@@ -17,7 +17,7 @@ ofxAssimpModelLoader::~ofxAssimpModelLoader(){
 }
 
 //------------------------------------------
-bool ofxAssimpModelLoader::loadModel(string modelName, bool optimize){
+bool ofxAssimpModelLoader::loadModel(string modelName, bool optimize, bool normalize){
     
     file.open(modelName, ofFile::ReadOnly, true); // Since it may be a binary file we should read it in binary -Ed
     if(!file.exists()) {
@@ -26,8 +26,17 @@ bool ofxAssimpModelLoader::loadModel(string modelName, bool optimize){
     }
 
     ofLogVerbose("ofxAssimpModelLoader") << "loadModel(): loading \"" << file.getFileName()
-		<< "\" from \"" << file.getEnclosingDirectory() << "\"";
+    << "\" from \"" << file.getEnclosingDirectory() << "\"";
     
+    // write import log file with model
+    struct aiLogStream c;
+    c = aiGetPredefinedLogStream(aiDefaultLogStream_FILE, ofToDataPath(string(modelName + ".importlog.txt")).c_str());
+    if(ofGetLogLevel("ofxAssimpModelLoader") == OF_LOG_VERBOSE){
+        aiEnableVerboseLogging(true);
+        ofLogVerbose("ofxAssimpModelLoader") << "loadModel(): Import log written to \"" << ofToDataPath(string(modelName + ".importlog.txt")) <<  "\"" << endl;
+        aiAttachLogStream(&c);
+    }
+
     if(scene.get() != nullptr){
         clear();
 		// we reset the shared_ptr explicitly here, to force the old 
@@ -36,18 +45,61 @@ bool ofxAssimpModelLoader::loadModel(string modelName, bool optimize){
     }
     
     // sets various properties & flags to a default preference
-    unsigned int flags = initImportProperties(optimize);
+    unsigned int flags = initImportProperties(optimize, normalize);
     
     // loads scene from file
 	std::string path = file.getAbsolutePath();
 	scene = shared_ptr<const aiScene>(aiImportFileExWithProperties(path.c_str(), flags, NULL, store.get()), aiReleaseImport);
     
     bool bOk = processScene();
+    
+    aiDetachAllLogStreams();
     return bOk;
 }
 
+/*
+of3dPrimitive ofxAssimpModelLoader::loadAs3DPrimitives(string modelName, bool optimize, bool normalize){
+    
+    file.open(modelName, ofFile::ReadOnly, true); // Since it may be a binary file we should read it in binary -Ed
+    if(!file.exists()) {
+        ofLogVerbose("ofxAssimpModelLoader") << "loadModel(): model does not exist: \"" << modelName << "\"";
+        return of3dPrimitive();
+    }
+    
+    ofLogVerbose("ofxAssimpModelLoader") << "loadModel(): loading \"" << file.getFileName()
+    << "\" from \"" << file.getEnclosingDirectory() << "\"";
+    
+    // write import log file with model
+    struct aiLogStream c;
+    c = aiGetPredefinedLogStream(aiDefaultLogStream_FILE, ofToDataPath(string(modelName + ".importlog.txt")).c_str());
+    if(ofGetLogLevel() == OF_LOG_VERBOSE){
+        aiEnableVerboseLogging(true);
+        ofLogVerbose("ofxAssimpModelLoader") << "loadModel(): Iimport log written to \"" << ofToDataPath(string(modelName + ".importlog.txt")) <<  "\"" << endl;
+        aiAttachLogStream(&c);
+    }
+    
+    if(scene.get() != nullptr){
+        clear();
+        // we reset the shared_ptr explicitly here, to force the old
+        // aiScene to be deleted **before** a new aiScene is created.
+        scene.reset();
+    }
+    
+    // sets various properties & flags to a default preference
+    unsigned int flags = initImportProperties(optimize, normalize);
+    
+    // loads scene from file
+    std::string path = file.getAbsolutePath();
+    scene = shared_ptr<const aiScene>(aiImportFileExWithProperties(path.c_str(), flags, NULL, store.get()), aiReleaseImport);
+    
+    rootPrimitive = get3DPrimitives(scene->mRootNode);
+    
+    aiDetachAllLogStreams();
+    return rootPrimitive;
+}
+*/
 
-bool ofxAssimpModelLoader::loadModel(ofBuffer & buffer, bool optimize, const char * extension){
+bool ofxAssimpModelLoader::loadModel(ofBuffer & buffer, bool optimize, bool normalize, const char * extension){
     
     ofLogVerbose("ofxAssimpModelLoader") << "loadModel(): loading from memory buffer \"." << extension << "\"";
     
@@ -59,7 +111,7 @@ bool ofxAssimpModelLoader::loadModel(ofBuffer & buffer, bool optimize, const cha
     }
     
     // sets various properties & flags to a default preference
-    unsigned int flags = initImportProperties(optimize);
+    unsigned int flags = initImportProperties(optimize, normalize);
     
     // loads scene from memory buffer - note this will not work for multipart files (obj, md3, etc)
     scene = shared_ptr<const aiScene>(aiImportFileFromMemoryWithProperties(buffer.getData(), buffer.size(), flags, extension, store.get()), aiReleaseImport);
@@ -68,20 +120,81 @@ bool ofxAssimpModelLoader::loadModel(ofBuffer & buffer, bool optimize, const cha
     return bOk;
 }
 
-unsigned int ofxAssimpModelLoader::initImportProperties(bool optimize) {    
+unsigned int ofxAssimpModelLoader::initImportProperties(bool optimize, bool normalize) {
     store.reset(aiCreatePropertyStore(), aiReleasePropertyStore);
     
     // only ever give us triangles.
     aiSetImportPropertyInteger(store.get(), AI_CONFIG_PP_SBP_REMOVE, aiPrimitiveType_LINE | aiPrimitiveType_POINT );
-    aiSetImportPropertyInteger(store.get(), AI_CONFIG_PP_PTV_NORMALIZE, true);
+    
+    // but don't normalize in the pre transform vertices step - we want the real scale model
+    aiSetImportPropertyInteger(store.get(), AI_CONFIG_PP_PTV_NORMALIZE, false);
     
     // aiProcess_FlipUVs is for VAR code. Not needed otherwise. Not sure why.
-    unsigned int flags = aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_Triangulate | aiProcess_FlipUVs;
+    unsigned int flags = /*aiProcessPreset_TargetRealtime_MaxQuality |*/ aiProcess_Triangulate | aiProcess_FlipUVs;
     if(optimize) flags |=  aiProcess_ImproveCacheLocality | aiProcess_OptimizeGraph |
         aiProcess_OptimizeMeshes | aiProcess_JoinIdenticalVertices |
         aiProcess_RemoveRedundantMaterials;
     
+    if(normalize) flags |= aiProcess_PreTransformVertices;
+    
     return flags;
+}
+
+ofxAssimp3dPrimitive * ofxAssimpModelLoader::getPrimitives(aiNode * node, ofxAssimp3dPrimitive * parentPrimitive){
+    if(node == nullptr){
+        node = scene->mRootNode;
+        ofLogVerbose("ofxAssimpModelLoader") << "getPrimitives(): Converting mesh:";
+    }
+    
+    string address ="[" + string(node->mName.C_Str()) + "]";
+    int level = 0;
+    string tabString = "";
+    
+    aiNode * pNode = node;
+    while (pNode->mParent != NULL){
+        level++;
+        address = "[" + string(pNode->mParent->mName.C_Str()) + "]" + address;
+        tabString += "\t";
+        pNode = pNode->mParent;
+    }
+    
+    ofLogVerbose("ofxAssimpModelLoader") << address << "\t meshes: " << node->mNumMeshes << "\t children: " << node->mNumChildren;
+
+    
+    ofxAssimp3dPrimitive * retPrimitive;
+    if (parentPrimitive != nullptr)
+            retPrimitive = new ofxAssimp3dPrimitive(*parentPrimitive);
+    else
+        retPrimitive = new ofxAssimp3dPrimitive();
+    retPrimitive->name = address;
+    auto retTransform = node->mTransformation;
+    aiVector3t<float> retScaling;
+    aiQuaterniont<float> retRotation;
+    aiVector3t<float> retPosition;
+    
+    retTransform.Decompose(retScaling, retRotation, retPosition);
+    retPrimitive->setScale(aiVecToOfVec(retScaling));
+    retPrimitive->setOrientation(aiQuatToGlmQuat(retRotation));
+    retPrimitive->setPosition(aiVecToOfVec(retPosition));
+    
+    ofLogVerbose("ofxAssimpModelLoader") << address << "\t rotation " << aiQuatToGlmQuat(retRotation);
+    ofLogVerbose("ofxAssimpModelLoader") << address << "\t scaling " << aiVecToOfVec(retScaling);
+    ofLogVerbose("ofxAssimpModelLoader") << address << "\t position " << aiVecToOfVec(retPosition);
+
+    // process all the node's meshes (if any)
+    for(unsigned int i = 0; i < node->mNumMeshes; i++)
+    {
+        auto mesh = modelMeshes[node->mMeshes[i]].cachedMesh;
+        ofxAssimp3dPrimitive * newPrimitive = new ofxAssimp3dPrimitive(mesh, *retPrimitive);
+        newPrimitive->name = address + "[mesh" + ofToString(i) + "]";
+    }
+    // then do the same for each of its children
+    for(unsigned int i = 0; i < node->mNumChildren; i++)
+    {
+        auto child = getPrimitives(node->mChildren[i], retPrimitive);
+        child->bDraw = true;
+    }
+    return retPrimitive;
 }
 
 bool ofxAssimpModelLoader::processScene() {
@@ -714,6 +827,14 @@ void ofxAssimpModelLoader::drawVertices(){
 	draw(OF_MESH_POINTS);
 }
 
+
+void ofxAssimpModelLoader::drawRecursive(ofPolyRenderMode renderType,aiNode * node ) {
+    if(node == NULL){
+        node = scene->mRootNode;
+    }
+    
+    
+}
 
 //-------------------------------------------
 void ofxAssimpModelLoader::draw(ofPolyRenderMode renderType) {
