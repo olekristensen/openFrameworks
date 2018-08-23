@@ -206,10 +206,10 @@ void ofxAssimp3dPrimitive::update() {
     }
 };
 
-void ofxAssimp3dPrimitive::recursiveDraw() {
-    of3dPrimitive::draw();
+void ofxAssimp3dPrimitive::recursiveDraw(ofPolyRenderMode renderType) {
+    of3dPrimitive::draw(renderType);
     for(auto c : getChildren()) {
-        c->recursiveDraw();
+        c->recursiveDraw(renderType);
     }
 };
 

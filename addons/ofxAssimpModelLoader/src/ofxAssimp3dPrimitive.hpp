@@ -92,7 +92,7 @@ public:
     
     void update();
     
-    void recursiveDraw();
+    void recursiveDraw(ofPolyRenderMode renderType = OF_MESH_FILL);
     
     ofMesh & getBakedMesh();
     vector<ofMesh> getBakedMeshesRecursive();
