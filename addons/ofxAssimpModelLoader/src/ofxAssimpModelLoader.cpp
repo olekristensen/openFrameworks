@@ -159,7 +159,6 @@ ofxAssimp3dPrimitive * ofxAssimpModelLoader::getPrimitives(aiNode * node, ofxAss
     }
     
     ofLogVerbose("ofxAssimpModelLoader") << address << "\t meshes: " << node->mNumMeshes << "\t children: " << node->mNumChildren;
-
     
     ofxAssimp3dPrimitive * retPrimitive;
     if (parentPrimitive != nullptr)
@@ -177,17 +176,27 @@ ofxAssimp3dPrimitive * ofxAssimpModelLoader::getPrimitives(aiNode * node, ofxAss
     retPrimitive->setOrientation(aiQuatToGlmQuat(retRotation));
     retPrimitive->setPosition(aiVecToOfVec(retPosition));
     
-    ofLogVerbose("ofxAssimpModelLoader") << address << "\t rotation " << aiQuatToGlmQuat(retRotation);
-    ofLogVerbose("ofxAssimpModelLoader") << address << "\t scaling " << aiVecToOfVec(retScaling);
-    ofLogVerbose("ofxAssimpModelLoader") << address << "\t position " << aiVecToOfVec(retPosition);
+    //ofLogVerbose("ofxAssimpModelLoader") << address << "\t rotation " << aiQuatToGlmQuat(retRotation);
+    //ofLogVerbose("ofxAssimpModelLoader") << address << "\t scaling " << aiVecToOfVec(retScaling);
+    //ofLogVerbose("ofxAssimpModelLoader") << address << "\t position " << aiVecToOfVec(retPosition);
 
     // process all the node's meshes (if any)
+    int textureNumber = -2;
+    bool allTexturesInNodeHaveSameNumber = true;
     for(unsigned int i = 0; i < node->mNumMeshes; i++)
     {
-        auto mesh = modelMeshes[node->mMeshes[i]].cachedMesh;
-        ofxAssimp3dPrimitive * newPrimitive = new ofxAssimp3dPrimitive(mesh, *retPrimitive);
+        ofxAssimp3dPrimitive * newPrimitive = new ofxAssimp3dPrimitive(modelMeshes[node->mMeshes[i]].cachedMesh, *retPrimitive);
+        if(modelMeshes[node->mMeshes[i]].hasTexture()) {
+            int tN = newPrimitive->addTextureName(modelMeshes[node->mMeshes[i]].assimpTexture.getTexturePath());
+            if(i == 0) textureNumber = tN;
+            if(tN != textureNumber) allTexturesInNodeHaveSameNumber = false;
+        } else {
+            allTexturesInNodeHaveSameNumber = false;
+        }
         newPrimitive->name = address + "[mesh" + ofToString(i) + "]";
+        ofLogVerbose("ofxAssimpModelLoader") << newPrimitive->name << (newPrimitive->textureIndex > 0 ? "\t texture: " + newPrimitive->textureNames[newPrimitive->textureIndex] : "");
     }
+    if(allTexturesInNodeHaveSameNumber && node->mNumMeshes > 1) retPrimitive->textureIndex = textureNumber;
     // then do the same for each of its children
     for(unsigned int i = 0; i < node->mNumChildren; i++)
     {
@@ -825,15 +834,6 @@ void ofxAssimpModelLoader::drawFaces(){
 //--------------------------------------------------------------
 void ofxAssimpModelLoader::drawVertices(){
 	draw(OF_MESH_POINTS);
-}
-
-
-void ofxAssimpModelLoader::drawRecursive(ofPolyRenderMode renderType,aiNode * node ) {
-    if(node == NULL){
-        node = scene->mRootNode;
-    }
-    
-    
 }
 
 //-------------------------------------------

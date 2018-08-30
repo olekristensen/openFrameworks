@@ -15,11 +15,40 @@ public:
     
     static ofxAssimp3dPrimitive * thePrimitive;
     static int counter;
-    
+    static vector<string> textureNames;
+
     ofxAssimp3dPrimitive();
     ofxAssimp3dPrimitive(ofMesh &_mesh);
     ofxAssimp3dPrimitive(ofMesh &_mesh, ofxAssimp3dPrimitive& vnParent);
     ofxAssimp3dPrimitive(ofxAssimp3dPrimitive& vnParent);
+
+    int addTextureName(string name){
+        int index = getTextureIndexFromName(name);
+        if(index < 0){
+            textureNames.push_back(name);
+            index = textureNames.size()-1;
+        }
+        textureIndex = index;
+        return index;
+    }
+    
+    string getTextureNameFromIndex(int index){
+        if(index < textureNames.size())
+            return textureNames[index];
+        else
+            return "";
+    }
+
+    int getTextureIndexFromName(string name){
+        int index = 0;
+        for(string str : textureNames){
+            if(str == name){
+                return index;
+            }
+            index++;
+        }
+        return -1;
+    }
 
     ~ofxAssimp3dPrimitive();
     
@@ -46,6 +75,7 @@ public:
     int level;
     string name;
     ofMesh bakedMesh;
+    int textureIndex = -1;
     
     // useful data structure for transitions
     ofVec3f positionOverideTarget;

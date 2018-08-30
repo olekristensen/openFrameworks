@@ -8,6 +8,7 @@
 #include "ofxAssimp3dPrimitive.hpp"
 
 int ofxAssimp3dPrimitive::counter = 0;
+vector<string> ofxAssimp3dPrimitive::textureNames = vector<string>();
 ofxAssimp3dPrimitive * ofxAssimp3dPrimitive::thePrimitive = nullptr;
 
 ofxAssimp3dPrimitive::ofxAssimp3dPrimitive() {
@@ -27,7 +28,7 @@ ofxAssimp3dPrimitive::ofxAssimp3dPrimitive(ofMesh &_mesh) : of3dPrimitive(_mesh)
 ofxAssimp3dPrimitive::ofxAssimp3dPrimitive(ofMesh &_mesh, ofxAssimp3dPrimitive& vnParent) : of3dPrimitive(_mesh) {
     counter++;
     bDraw = true;
-    
+
     level = vnParent.level+1;
     
     // make the mesh vertices local for the node
