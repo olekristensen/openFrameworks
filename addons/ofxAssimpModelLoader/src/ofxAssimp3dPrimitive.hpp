@@ -124,6 +124,50 @@ public:
     
     void recursiveDraw(ofPolyRenderMode renderType = OF_MESH_FILL);
     
+    ofxAssimp3dPrimitive * getFirstPrimitiveWithTextureIndex(int aTextureIndex){
+        if(this->textureIndex == aTextureIndex)
+            return this;
+        else {
+            for(auto c : this->getChildren()) {
+                ofxAssimp3dPrimitive * retP = c->getFirstPrimitiveWithTextureIndex(aTextureIndex);
+                if(retP != nullptr){
+                    return retP;
+                }
+            }
+        }
+        return nullptr;
+    }
+    
+    vector<ofxAssimp3dPrimitive*> getPrimitivesWithTextureIndex(int aTextureIndex){
+        vector<ofxAssimp3dPrimitive*> retVec;
+        if(this->textureIndex == aTextureIndex){
+            retVec.push_back(this);
+            return retVec;
+        } else {
+            for(auto c : this->getChildren()) {
+                auto childVec = c->getPrimitivesWithTextureIndex(aTextureIndex);
+                if(childVec.size() > 0){
+                    for(auto child : childVec){
+                        retVec.push_back(child);
+                    }
+                }
+            }
+        }
+        return retVec;
+    }
+    
+    ofxAssimp3dPrimitive * getFirstPrimitiveWithTextureNameContaining(string str){
+        int aTextureIndex = 0;
+        for(auto name : this->textureNames){
+            if(ofStringTimesInString(name, str) > 0){
+                break;
+            }
+            aTextureIndex++;
+        }
+        
+        return getFirstPrimitiveWithTextureIndex(aTextureIndex);
+    }
+    
     ofMesh & getBakedMesh();
     vector<ofMesh> getBakedMeshesRecursive();
     
