@@ -164,6 +164,10 @@ public:
 	/// Returns the area bounds used for mouse control.
 	ofRectangle getControlArea() const;
 	
+    bool isMouseDragging(){
+        return bMouseDragging;
+    }
+    
 	/// Transformation types available for mouse interaction.
 	enum TransformType{
 		TRANSFORM_NONE,
@@ -262,6 +266,8 @@ private:
 	glm::vec3 upAxis{0,1,0};
 	
 	glm::vec2 mouseAtScroll;
+    
+    bool bMouseDragging = false;
 	
 	/// \brief previous far and near clip.
 	float prevFarClip, prevNearClip;

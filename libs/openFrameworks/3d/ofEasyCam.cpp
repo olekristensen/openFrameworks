@@ -376,6 +376,7 @@ void ofEasyCam::mousePressed(ofMouseEventArgs & mouse){
 			for (const auto& i: interactions) {
 				if (i.mouseButton == mouse.button && ((i.key == -1) ^ events->getKeyPressed(i.key))) {
 					currentTransformType = i.transformType;
+                    bMouseDragging = true;
 					break;
 				}
 			}
@@ -400,6 +401,8 @@ void ofEasyCam::mouseReleased(ofMouseEventArgs & mouse){
 		}
 		lastTap = curTap;
 	}
+    
+    if(bMouseDragging) bMouseDragging = false;
 
 	if(doInertia){
 		bApplyInertia = true;
