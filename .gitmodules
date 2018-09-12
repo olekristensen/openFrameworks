@@ -13,3 +13,6 @@
 [submodule "apps/oresund"]
 	path = apps/oresund
 	url = https://github.com/olekristensen/oresund
+[submodule "addons/ofxRealsense2"]
+	path = addons/ofxRealsense2
+	url = https://github.com/olekristensen/ofxRealsense2
