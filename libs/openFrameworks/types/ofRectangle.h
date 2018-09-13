@@ -827,6 +827,9 @@ public:
     /// \returns The height of the rectangle.
     float getHeight() const;
 
+    /// \brief Gets the distance from a point to the closest point on the rectangle sides.
+    /// \returns The distance of the rectangle from the point.
+    float distanceFrom(const glm::vec2& p) const;
     
     /// \brief Maps a normalized coordinate into this rectangle
     /// 

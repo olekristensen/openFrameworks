@@ -754,6 +754,13 @@ float ofRectangle::getHeight() const {
 }
 
 //----------------------------------------------------------
+float ofRectangle::distanceFrom(const glm::vec2& p) const {
+    float dx = max( max(getMinX() - p.x, 0.0f), p.x - getMaxX());
+    float dy = max( max(getMinY() - p.y, 0.0f), p.y - getMaxY());
+    return sqrt(dx*dx + dy*dy);
+}
+
+//----------------------------------------------------------
 glm::vec2 ofRectangle::map(const glm::vec2 & coeff) const {
     return glm::vec2(
         ofMap(coeff.x, 0.0f, 1.0f, getMinX(), getMaxX(), false), 
