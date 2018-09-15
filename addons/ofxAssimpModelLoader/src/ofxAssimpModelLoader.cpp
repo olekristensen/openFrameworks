@@ -31,11 +31,9 @@ bool ofxAssimpModelLoader::loadModel(string modelName, bool optimize, bool norma
     // write import log file with model
     struct aiLogStream c;
     c = aiGetPredefinedLogStream(aiDefaultLogStream_FILE, ofToDataPath(string(modelName + ".importlog.txt")).c_str());
-    if(ofGetLogLevel("ofxAssimpModelLoader") == OF_LOG_VERBOSE){
         aiEnableVerboseLogging(true);
         ofLogVerbose("ofxAssimpModelLoader") << "loadModel(): Import log written to \"" << ofToDataPath(string(modelName + ".importlog.txt")) <<  "\"" << endl;
         aiAttachLogStream(&c);
-    }
 
     if(scene.get() != nullptr){
         clear();
@@ -125,15 +123,16 @@ unsigned int ofxAssimpModelLoader::initImportProperties(bool optimize, bool norm
     
     // only ever give us triangles.
     aiSetImportPropertyInteger(store.get(), AI_CONFIG_PP_SBP_REMOVE, aiPrimitiveType_LINE | aiPrimitiveType_POINT );
-    
+
+    aiSetImportPropertyInteger(store.get(), AI_CONFIG_PP_RVC_FLAGS, aiComponent_COLORS );
+
     // but don't normalize in the pre transform vertices step - we want the real scale model
     aiSetImportPropertyInteger(store.get(), AI_CONFIG_PP_PTV_NORMALIZE, false);
     
     // aiProcess_FlipUVs is for VAR code. Not needed otherwise. Not sure why.
     unsigned int flags = /*aiProcessPreset_TargetRealtime_MaxQuality |*/ aiProcess_Triangulate | aiProcess_FlipUVs;
-    if(optimize) flags |=  aiProcess_ImproveCacheLocality | aiProcess_OptimizeGraph |
-        aiProcess_OptimizeMeshes | aiProcess_JoinIdenticalVertices |
-        aiProcess_RemoveRedundantMaterials;
+    if(optimize) flags |=  aiProcess_ImproveCacheLocality | aiProcess_GenNormals | aiProcess_ValidateDataStructure | aiProcess_FindDegenerates | aiProcess_SortByPType | aiProcess_OptimizeMeshes | aiProcess_SplitLargeMeshes | aiProcess_FixInfacingNormals | aiProcess_FindInvalidData |
+         aiProcess_JoinIdenticalVertices ;
     
     if(normalize) flags |= aiProcess_PreTransformVertices;
     
