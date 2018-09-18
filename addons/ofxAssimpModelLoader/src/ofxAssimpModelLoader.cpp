@@ -134,7 +134,7 @@ unsigned int ofxAssimpModelLoader::initImportProperties(bool optimize, bool norm
     if(optimize) flags |=  aiProcess_ImproveCacheLocality | aiProcess_GenNormals | aiProcess_ValidateDataStructure | aiProcess_FindDegenerates | aiProcess_SortByPType | aiProcess_OptimizeMeshes | aiProcess_SplitLargeMeshes | aiProcess_FixInfacingNormals | aiProcess_FindInvalidData |
          aiProcess_JoinIdenticalVertices ;
     
-    if(normalize) flags |= aiProcess_PreTransformVertices;
+    if(normalize) flags |= aiProcess_PreTransformVertices | aiProcess_OptimizeGraph;
     
     return flags;
 }

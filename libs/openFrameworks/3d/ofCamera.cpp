@@ -82,16 +82,17 @@ void ofCamera::setupPerspective(bool _vFlip, float fov, float nearDist, float fa
 
 //----------------------------------------
 void ofCamera:: setupOffAxisViewPortal(const glm::vec3 & topLeft, const glm::vec3 & bottomLeft, const glm::vec3 & bottomRight){
+    
 	auto bottomEdge = bottomRight - bottomLeft; // plane x axis
 	auto leftEdge = topLeft - bottomLeft; // plane y axis
 	auto bottomEdgeNorm = glm::normalize(bottomEdge);
 	auto leftEdgeNorm = glm::normalize(leftEdge);
-	auto bottomLeftToCam = this->getPosition() - bottomLeft;
+	auto bottomLeftToCam = this->getGlobalPosition() - bottomLeft;
 	
 	auto cameraLookVector = glm::cross(leftEdgeNorm, bottomEdgeNorm);
 	auto cameraUpVector = glm::cross(bottomEdgeNorm, cameraLookVector);
 	
-	lookAt(cameraLookVector + this->getPosition(), cameraUpVector);
+	lookAt(cameraLookVector + this->getGlobalPosition(), cameraUpVector);
 
 	//lensoffset
 	glm::vec2 lensOffset;
