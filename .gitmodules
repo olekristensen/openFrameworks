@@ -19,3 +19,6 @@
 [submodule "apps/projectGenerator"]
 	path = apps/projectGenerator
 	url = https://github.com/openframeworks/projectGenerator
+[submodule "apps/stagesOfScience/realsense-osc-tracker"]
+	path = apps/stagesOfScience/realsense-osc-tracker
+	url = https://github.com/den-frie-vilje/realsense-osc-tracker.git
