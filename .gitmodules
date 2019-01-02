@@ -4,18 +4,22 @@
 [submodule "addons/ofxChoreograph"]
 	path = addons/ofxChoreograph
 	url = https://github.com/olekristensen/ofxChoreograph
+	branch = oresund
 [submodule "addons/ofxPBR"]
 	path = addons/ofxPBR
 	url = https://github.com/olekristensen/ofxPBR
+	branch = oresund
 [submodule "addons/ofxImGui"]
 	path = addons/ofxImGui
 	url = https://github.com/olekristensen/ofxImGui
+	branch = oresund
 [submodule "apps/oresund"]
 	path = apps/oresund
 	url = https://github.com/olekristensen/oresund
 [submodule "addons/ofxRealsense2"]
 	path = addons/ofxRealsense2
 	url = https://github.com/olekristensen/ofxRealsense2
+	branch = oresund
 [submodule "apps/projectGenerator"]
 	path = apps/projectGenerator
 	url = https://github.com/openframeworks/projectGenerator
