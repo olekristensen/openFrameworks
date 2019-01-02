@@ -4,24 +4,9 @@
 [submodule "addons/ofxChoreograph"]
 	path = addons/ofxChoreograph
 	url = https://github.com/olekristensen/ofxChoreograph
-[submodule "addons/ofxPBR"]
-	path = addons/ofxPBR
-	url = https://github.com/olekristensen/ofxPBR
-[submodule "addons/ofxImGui"]
-	path = addons/ofxImGui
-	url = https://github.com/olekristensen/ofxImGui
-[submodule "apps/oresund"]
-	path = apps/oresund
-	url = https://github.com/olekristensen/oresund
-[submodule "addons/ofxRealsense2"]
-	path = addons/ofxRealsense2
-	url = https://github.com/olekristensen/ofxRealsense2
 [submodule "apps/projectGenerator"]
 	path = apps/projectGenerator
 	url = https://github.com/openframeworks/projectGenerator
-[submodule "apps/stagesOfScience/realsense-osc-tracker"]
-	path = apps/stagesOfScience/realsense-osc-tracker
-	url = https://github.com/den-frie-vilje/realsense-osc-tracker.git
 [submodule "apps/stagesOfScience/oscGraph"]
 	path = apps/stagesOfScience/oscGraph
 	url = https://github.com/den-frie-vilje/osc-syphon-graph
