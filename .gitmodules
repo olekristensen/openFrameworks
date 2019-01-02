@@ -22,3 +22,6 @@
 [submodule "apps/stagesOfScience/realsense-osc-tracker"]
 	path = apps/stagesOfScience/realsense-osc-tracker
 	url = https://github.com/den-frie-vilje/realsense-osc-tracker.git
+[submodule "apps/stagesOfScience/oscGraph"]
+	path = apps/stagesOfScience/oscGraph
+	url = https://github.com/den-frie-vilje/osc-syphon-graph
