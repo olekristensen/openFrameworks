@@ -7,3 +7,6 @@
 [submodule "addons/ofxDelaunay"]
 	path = addons/ofxDelaunay
 	url = https://github.com/olekristensen/ofxDelaunay.git
+[submodule "apps/aurora/auroraTesselator"]
+	path = apps/aurora/auroraTesselator
+	url = https://github.com/den-frie-vilje/auroraTesselator.git
