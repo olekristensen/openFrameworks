@@ -10,3 +10,6 @@
 [submodule "apps/aurora/auroraTesselator"]
 	path = apps/aurora/auroraTesselator
 	url = https://github.com/den-frie-vilje/auroraTesselator.git
+[submodule "addons/ofxImGui"]
+	path = addons/ofxImGui
+	url = https://github.com/olekristensen/ofxImGui.git
