@@ -7,3 +7,42 @@
 [submodule "apps/illw/illw-plotter"]
 	path = apps/illw/illw-plotter
 	url = https://github.com/olekristensen/illw-plotter
+[submodule "addons/ofxGeo"]
+	path = addons/ofxGeo
+	url = https://github.com/bakercp/ofxGeo
+[submodule "addons/ofxGeographicLib"]
+	path = addons/ofxGeographicLib
+	url = https://github.com/bakercp/ofxGeographicLib
+[submodule "addons/ofxHPGL"]
+	path = addons/ofxHPGL
+	url = https://github.com/NickHardeman/ofxHPGL
+[submodule "addons/ofxImGui"]
+	path = addons/ofxImGui
+	url = https://github.com/jvcleave/ofxImGui
+[submodule "addons/ofxTime"]
+	path = addons/ofxTime
+	url = https://github.com/bakercp/ofxTime
+[submodule "addons/ofxJSONRPC"]
+	path = addons/ofxJSONRPC
+	url = https://github.com/bakercp/ofxJSONRPC
+[submodule "addons/ofxIO"]
+	path = addons/ofxIO
+	url = https://github.com/bakercp/ofxIO
+[submodule "addons/ofxHTTP"]
+	path = addons/ofxHTTP
+	url = https://github.com/bakercp/ofxHTTP
+[submodule "addons/ofxSSLManager"]
+	path = addons/ofxSSLManager
+	url = https://github.com/bakercp/ofxSSLManager
+[submodule "addons/ofxMediaType"]
+	path = addons/ofxMediaType
+	url = https://github.com/bakercp/ofxMediaType
+[submodule "addons/ofxNetworkUtils"]
+	path = addons/ofxNetworkUtils
+	url = https://github.com/bakercp/ofxNetworkUtils
+[submodule "addons/ofxHersheyFont"]
+	path = addons/ofxHersheyFont
+	url = https://github.com/tobiaszimmer/ofxHersheyFont
+[submodule "addons/ofxSQLiteCpp"]
+	path = addons/ofxSQLiteCpp
+	url = https://github.com/bakercp/ofxSQLiteCpp
