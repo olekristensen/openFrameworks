@@ -4,3 +4,6 @@
 [submodule "scripts/apothecary"]
 	path = scripts/apothecary
 	url = https://github.com/openframeworks/apothecary
+[submodule "apps/illw/illw-plotter"]
+	path = apps/illw/illw-plotter
+	url = https://github.com/olekristensen/illw-plotter
