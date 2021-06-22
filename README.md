@@ -7,9 +7,20 @@ openFrameworks is a C++ toolkit for creative coding.  If you are new to OF, welc
 
 ## Build status
 
-Linux, OSX, iOS and Android     [![Build Status](https://travis-ci.org/openframeworks/openFrameworks.svg?branch=master)](https://travis-ci.org/openframeworks/openFrameworks)
+* The **master** branch contains the newest, most recently updated code. This code is packaged and available for download in the "Nightly Builds" section of [openframeworks.cc/download](https://openframeworks.cc/download/).
+* The **stable** branch contains the code corresponding to the last stable openFrameworks release. This stable code is packaged and available for download at [openframeworks.cc/download](https://openframeworks.cc/download/).
 
-Visual studio [![Build status](https://ci.appveyor.com/api/projects/status/sm9jxy0u56bl8syi/branch/master?svg=true)](https://ci.appveyor.com/project/arturoc/openframeworks/branch/master)
+Platform                     | Master branch  | Stable branch
+-----------------------------|:---------|:---------
+Windows MSYS2        | [![Build status](https://github.com/openframeworks/openFrameworks/workflows/build-msys2/badge.svg)](https://github.com/openframeworks/openFrameworks/actions) | [![Build status](https://appveyor-matrix-badges.herokuapp.com/repos/arturoc/openFrameworks/branch/stable/1)](https://ci.appveyor.com/project/arturoc/openFrameworks/branch/stable)
+Windows Visual Studio  | [![Build status](https://github.com/openframeworks/openFrameworks/workflows/build-vs/badge.svg)](https://github.com/openframeworks/openFrameworks/actions) | [![Build status](https://appveyor-matrix-badges.herokuapp.com/repos/arturoc/openFrameworks/branch/stable/2)](https://ci.appveyor.com/project/arturoc/openFrameworks/branch/stable)
+Linux 64 & Arm                    | [![Linux Build Status](https://github.com/openframeworks/openFrameworks/workflows/build-linux64-and-arm/badge.svg)](https://github.com/openframeworks/openFrameworks/actions) | [![Linux Build Status](http://badges.herokuapp.com/travis/openframeworks/openFrameworks?env=TARGET="linux64"&label=build&branch=stable)](https://github.com/openframeworks/openFrameworks/actions)
+Emscripten                   | [![Emscripten Build Status](https://github.com/openframeworks/openFrameworks/workflows/build-emscripten/badge.svg)](https://github.com/openframeworks/openFrameworks/actions) | [![Emscripten Build Status](http://badges.herokuapp.com/travis/openframeworks/openFrameworks?env=TARGET="emscripten"&label=build&branch=stable)](https://github.com/openframeworks/openFrameworks/actions)
+macos                        | [![macos Build Status](https://github.com/openframeworks/openFrameworks/workflows/build-macos/badge.svg)](https://github.com/openframeworks/openFrameworks/actions) | [![macos Build Status](http://badges.herokuapp.com/travis/openframeworks/openFrameworks?env=TARGET="osx"&label=build&branch=stable)](https://github.com/openframeworks/openFrameworks/actions)
+iOS & iOS                         | [![iOS tvOS Build Status](https://github.com/openframeworks/openFrameworks/workflows/build-ios-tvos/badge.svg)](https://github.com/openframeworks/openFrameworks/actions) | [![iOS tvOS Build Status](http://badges.herokuapp.com/travis/openframeworks/openFrameworks?env=TARGET="ios"&label=build&branch=stable)](https://github.com/openframeworks/openFrameworks/actions)
+Android Arm7                 | [![Android Build Status](https://github.com/openframeworks/openFrameworks/workflows/build-android/badge.svg)](https://github.com/openframeworks/openFrameworks/actions) | [![Android Build Status](http://badges.herokuapp.com/travis/openframeworks/openFrameworks?env=GRADLE_TARGET="compileArm7DebugSources"&label=build&branch=stable)](https://github.com/openframeworks/openFrameworks/actions)
+
+
 
 ## folder structure
 

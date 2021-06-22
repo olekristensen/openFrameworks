@@ -646,20 +646,21 @@ void ofxInputField<Type>::generateDraw(){
 	}
 
 	auto inputWidth = getTextBoundingBox(input,0,0).width;
-	auto label = getTextBoundingBox(getName(), b.x + textPadding, b.y + b.height / 2 + 4);
-	auto value = getTextBoundingBox(input, b.x + b.width - textPadding - inputWidth, b.y + b.height / 2 + 4);
+	auto yPos = getTextVCenteredInRect(b);
+	auto label = getTextBoundingBox(getName(), b.x + textPadding, yPos);
+	auto value = getTextBoundingBox(input, b.x + b.width - textPadding - inputWidth, yPos);
 	overlappingLabel = label.getMaxX() > value.x;
 
 	textMesh.clear();
 	if(!bGuiActive || showLabelWhileEditing){
 		if(!overlappingLabel || (!bMouseOver && !bGuiActive)){
-			textMesh.append(getTextMesh(getName(), b.x + textPadding, b.y + b.height / 2 + 4) );
+			textMesh.append(getTextMesh(getName(), b.x + textPadding, yPos) );
 		}
 		if((!bGuiActive && (bMouseOver || !overlappingLabel)) || bGuiActive){
-			textMesh.append(getTextMesh(input, b.x + b.width - textPadding - inputWidth, b.y + b.height / 2 + 4));
+			textMesh.append(getTextMesh(input, b.x + b.width - textPadding - inputWidth, yPos));
 		}
 	}else{
-		textMesh.append(getTextMesh(input, b.x + textPadding, b.y + b.height / 2 + 4));
+		textMesh.append(getTextMesh(input, b.x + textPadding, yPos));
 	}
 	textMesh.getColors().assign(textMesh.getVertices().size(), thisTextColor);
 }
@@ -804,4 +805,8 @@ template class ofxInputField<uint64_t>;
 template class ofxInputField<float>;
 template class ofxInputField<double>;
 template class ofxInputField<std::string>;
+
+//for some reason osx errors if this isn't defined
+#ifdef TARGET_OSX
 template class ofxInputField<typename std::conditional<std::is_same<uint32_t, size_t>::value || std::is_same<uint64_t, size_t>::value, bool, size_t>::type>;
+#endif

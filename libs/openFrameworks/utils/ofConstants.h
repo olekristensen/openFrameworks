@@ -3,14 +3,17 @@
 
 //-------------------------------
 #define OF_VERSION_MAJOR 0
-#define OF_VERSION_MINOR 10
-#define OF_VERSION_PATCH 1
-#define OF_VERSION_PRE_RELEASE "stable"
+#define OF_VERSION_MINOR 11
+#define OF_VERSION_PATCH 2
+#define OF_VERSION_PRE_RELEASE "master"
 
 // Set to 1 for compatibility with old projects using ofVec instead of glm
 #ifndef OF_USE_LEGACY_VECTOR_MATH
 	#define OF_USE_LEGACY_VECTOR_MATH 0
 #endif
+
+// This enables glm's old behavior of initializing with non garbage values
+#define GLM_FORCE_CTOR_INIT
 
 // Set to 1 to use std filesystem instead of boost's
 #ifndef OF_USING_STD_FS
@@ -79,6 +82,12 @@ enum ofTargetPlatform{
 
 #if defined( __WIN32__ ) || defined( _WIN32 )
 	#define TARGET_WIN32
+	#if defined(_MSC_VER)
+		#define TARGET_WINVS
+	#endif
+	#if defined(__MINGW32__) || defined(__MINGW64__)
+		#define TARGET_MINGW
+	#endif
 #elif defined( __APPLE_CC__)
     #define __ASSERT_MACROS_DEFINE_VERSIONS_WITHOUT_UNDERSCORES 0
     #include <TargetConditionals.h>
@@ -124,7 +133,7 @@ enum ofTargetPlatform{
 	#define GLEW_STATIC
 	#define GLEW_NO_GLU
 	#include "GL/glew.h"
-    #include "GL/wglew.h"
+	#include "GL/wglew.h"
 	#define __WINDOWS_DS__
 	#define __WINDOWS_MM__
 	#if (_MSC_VER)       // microsoft visual studio
@@ -177,7 +186,6 @@ enum ofTargetPlatform{
 	#endif
 	#include <unistd.h>
 	#include "GL/glew.h"
-	#include <OpenGL/gl.h>
 	#include <ApplicationServices/ApplicationServices.h>
 
 	#if defined(__LITTLE_ENDIAN__)
@@ -205,11 +213,8 @@ enum ofTargetPlatform{
 		#define EGL_EGLEXT_PROTOTYPES
 		#include "EGL/egl.h"
 		#include "EGL/eglext.h"
-	#else // normal linux
-		#define GL_GLEXT_PROTOTYPES
-		#include <GL/glew.h>
-		#include <GL/gl.h>
-		#include <GL/glext.h>
+	#else // desktop linux
+		#include <GL/glew.h> 
 	#endif
 
 	// for some reason, this isn't defined at compile time,
@@ -373,7 +378,7 @@ typedef TESSindex ofIndexType;
 #if !defined(OF_SOUND_PLAYER_QUICKTIME) && !defined(OF_SOUND_PLAYER_FMOD) && !defined(OF_SOUND_PLAYER_OPENAL) && !defined(OF_SOUND_PLAYER_EMSCRIPTEN)
   #ifdef TARGET_OF_IOS
   	#define OF_SOUND_PLAYER_IPHONE
-  #elif defined(TARGET_LINUX)
+  #elif defined(TARGET_LINUX) || defined(TARGET_MINGW)
   	#define OF_SOUND_PLAYER_OPENAL
   #elif defined(TARGET_EMSCRIPTEN)
 	#define OF_SOUND_PLAYER_EMSCRIPTEN
