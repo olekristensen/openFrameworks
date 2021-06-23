@@ -36,3 +36,6 @@ ofxKinect/libs
 
 # don't ignore the .gitignore file
 !.gitignore
+
+# project addons
+!ofxCanon
